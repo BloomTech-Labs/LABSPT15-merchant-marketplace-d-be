@@ -8,7 +8,7 @@ router.get('/', authRequired, async (req, res) => {
   endpointCreator.findAllData('tag', req, res);
 });
 
-// GET all tags of item id with the item info
+// GET all tags of an item id
 router.get('/item/:itemID/', authRequired, async (req, res) => {
   const { itemID } = req.params;
   const response = await Model.getTagByItemId(itemID);

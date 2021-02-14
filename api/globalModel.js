@@ -5,7 +5,24 @@ const findAll = async (text) => {
 };
 
 const findItemByProfile = async (seller_profile_id) => {
-  return await db('item').select('*').where({ seller_profile_id });
+  const items = await db('item').select('*').where({ seller_profile_id });
+
+  for (item of items) {
+    const item_id = item.id;
+    const { url } = await db('photo')
+      .select('url')
+      .where({ item_id })
+      .orderBy('id', 'desc')
+      .first();
+
+    item.photo_url = url;
+
+    item.tags = await getTagByItemId(item.id);
+
+    console.log('item', item);
+  }
+
+  return items;
 };
 
 const createBySellerID = async (sellerID, item) => {
@@ -13,7 +30,24 @@ const createBySellerID = async (sellerID, item) => {
 };
 
 const findAllProducts = async (text, id) => {
-  return await db(text).select('*').where({ id });
+  const items = await db(text).select('*').where({ id });
+
+  for (item of items) {
+    const item_id = item.id;
+    const { url } = await db('photo')
+      .select('url')
+      .where({ item_id })
+      .orderBy('id', 'desc')
+      .first();
+
+    item.photo_url = url;
+
+    item.tags = await getTagByItemId(item.id);
+
+    console.log('item', item);
+  }
+
+  return items;
 };
 
 const findBy = (text, filter) => {
@@ -51,11 +85,13 @@ const findOrCreate = async (text, obj) => {
 };
 // GET info from join table
 const getTagByItemId = async (itemID) => {
-  return db('item as i')
+  const tags = await db('item as i')
     .join('tag_item as ti', 'i.id', 'ti.item_id')
     .join('tag as t', 't.id', 'ti.tag_id')
     .where('ti.item_id', itemID)
-    .returning('*');
+    .select('t.tag_name');
+
+  return tags.map((tag) => (tag = tag.tag_name));
 };
 // GET info from join table
 const getCategoryItem = async (itemID) => {

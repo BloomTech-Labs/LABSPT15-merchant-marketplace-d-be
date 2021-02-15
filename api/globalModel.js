@@ -7,7 +7,7 @@ const findAll = async (text) => {
 const findItemByProfile = async (seller_profile_id) => {
   const items = await db('item').select('*').where({ seller_profile_id });
 
-  for (item of items) {
+  for (let item of items) {
     const item_id = item.id;
     const { url } = await db('photo')
       .select('url')

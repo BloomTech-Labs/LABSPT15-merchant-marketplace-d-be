@@ -30,7 +30,7 @@ const createBySellerID = async (sellerID, item) => {
 const findAllProducts = async (text, id) => {
   const items = await db(text).select('*').where({ id });
 
-  for (item of items) {
+  for (let item of items) {
     const item_id = item.id;
     const { url } = await db('photo')
       .select('url')

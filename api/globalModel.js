@@ -18,8 +18,6 @@ const findItemByProfile = async (seller_profile_id) => {
     item.photo_url = url;
 
     item.tags = await getTagByItemId(item.id);
-
-    console.log('item', item);
   }
 
   return items;
@@ -43,8 +41,6 @@ const findAllProducts = async (text, id) => {
     item.photo_url = url;
 
     item.tags = await getTagByItemId(item.id);
-
-    console.log('item', item);
   }
 
   return items;
@@ -91,7 +87,7 @@ const getTagByItemId = async (itemID) => {
     .where('ti.item_id', itemID)
     .select('t.tag_name');
 
-  return tags.map((tag) => (tag = tag.tag_name));
+  return tags.map((tag) => tag.tag_name);
 };
 // GET info from join table
 const getCategoryItem = async (itemID) => {

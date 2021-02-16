@@ -85,9 +85,9 @@ const getTagByItemId = async (itemID) => {
     .join('tag_item as ti', 'i.id', 'ti.item_id')
     .join('tag as t', 't.id', 'ti.tag_id')
     .where('ti.item_id', itemID)
-    .select('t.tag_name');
+    .select('t.tag_name', 'ti.tag_id');
 
-  return tags.map((tag) => tag.tag_name);
+  return tags.map((tag) => ({ value: tag.tag_name, id: tag.tag_id }));
 };
 // GET info from join table
 const getCategoryItem = async (itemID) => {

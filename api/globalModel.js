@@ -5,7 +5,23 @@ const findAll = async (text) => {
 };
 
 const findItemByProfile = async (seller_profile_id) => {
-  return await db('item').select('*').where({ seller_profile_id });
+  const items = await db('item').select('*').where({ seller_profile_id });
+
+  for (let item of items) {
+    const item_id = item.id;
+    let urlArray = await db('photo')
+      .select('url')
+      .where({ item_id })
+      .orderBy('id', 'desc');
+
+    urlArray = urlArray.map((item) => item.url);
+
+    item.photos = urlArray;
+
+    item.tags = await getTagByItemId(item.id);
+  }
+
+  return items;
 };
 
 const createBySellerID = async (sellerID, item) => {
@@ -13,7 +29,23 @@ const createBySellerID = async (sellerID, item) => {
 };
 
 const findAllProducts = async (text, id) => {
-  return await db(text).select('*').where({ id });
+  const items = await db(text).select('*').where({ id });
+
+  for (let item of items) {
+    const item_id = item.id;
+    let urlArray = await db('photo')
+      .select('url')
+      .where({ item_id })
+      .orderBy('id', 'desc');
+
+    urlArray = urlArray.map((item) => item.url);
+
+    item.photos = urlArray;
+
+    item.tags = await getTagByItemId(item.id);
+  }
+
+  return items;
 };
 
 const findBy = (text, filter) => {
@@ -51,11 +83,13 @@ const findOrCreate = async (text, obj) => {
 };
 // GET info from join table
 const getTagByItemId = async (itemID) => {
-  return db('item as i')
+  const tags = await db('item as i')
     .join('tag_item as ti', 'i.id', 'ti.item_id')
     .join('tag as t', 't.id', 'ti.tag_id')
     .where('ti.item_id', itemID)
-    .returning('*');
+    .select('t.tag_name', 'ti.tag_id');
+
+  return tags.map((tag) => ({ value: tag.tag_name, id: tag.tag_id }));
 };
 // GET info from join table
 const getCategoryItem = async (itemID) => {
@@ -74,6 +108,11 @@ const getPhotoByItemID = async (itemID) => {
 // connect items and tags
 const connectItemsAndTags = async (itemID, tagID) => {
   return db('tag_item').insert({ item_id: itemID, tag_id: tagID });
+};
+
+// delete all tags for an item
+const deleteAllItemTags = async (item_id) => {
+  return db('tag_item').where({ item_id }).del();
 };
 
 //connect categories and items
@@ -98,4 +137,5 @@ module.exports = {
   createBySellerID,
   connectItemsAndCategories,
   connectItemsAndTags,
+  deleteAllItemTags,
 };

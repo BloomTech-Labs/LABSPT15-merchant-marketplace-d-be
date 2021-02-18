@@ -56,6 +56,11 @@ router.put('/:productId', authRequired, async (req, res) => {
 router.delete('/:productId/', authRequired, async (req, res) => {
   endpointCreator.deleteData('items', req, res);
 });
+
+// DELETE all tags for the item
+router.delete('/:productId/tags', authRequired, async (req, res) => {
+  // do stuff
+});
 //POST items and tags are connected
 router.post('/:itemID/tag/:tagID', authRequired, async (req, res) => {
   const { itemID, tagID } = req.params;

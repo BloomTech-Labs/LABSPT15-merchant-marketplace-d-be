@@ -4,7 +4,7 @@ const Model = require('../globalModel');
 const router = express.Router();
 const endpointCreator = require('../endPoints');
 
-// GET a photos item id
+// GET photos by item id
 router.get('/:itemID', authRequired, async (req, res) => {
   const { itemID } = req.params;
   const response = await Model.getPhotoByItemID(itemID);

@@ -9,13 +9,14 @@ const findItemByProfile = async (seller_profile_id) => {
 
   for (let item of items) {
     const item_id = item.id;
-    const { url } = await db('photo')
+    let urlArray = await db('photo')
       .select('url')
       .where({ item_id })
-      .orderBy('id', 'desc')
-      .first();
+      .orderBy('id', 'desc');
 
-    item.photo_url = url;
+    urlArray = urlArray.map((item) => item.url);
+
+    item.photos = urlArray;
 
     item.tags = await getTagByItemId(item.id);
   }
@@ -32,13 +33,14 @@ const findAllProducts = async (text, id) => {
 
   for (let item of items) {
     const item_id = item.id;
-    const { url } = await db('photo')
+    let urlArray = await db('photo')
       .select('url')
       .where({ item_id })
-      .orderBy('id', 'desc')
-      .first();
+      .orderBy('id', 'desc');
 
-    item.photo_url = url;
+    urlArray = urlArray.map((item) => item.url);
+
+    item.photos = urlArray;
 
     item.tags = await getTagByItemId(item.id);
   }

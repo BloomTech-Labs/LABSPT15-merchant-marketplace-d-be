@@ -110,6 +110,11 @@ const connectItemsAndTags = async (itemID, tagID) => {
   return db('tag_item').insert({ item_id: itemID, tag_id: tagID });
 };
 
+// delete all tags for an item
+const deleteAllItemTags = async (item_id) => {
+  return db('tag_item').where({ item_id }).del();
+};
+
 //connect categories and items
 const connectItemsAndCategories = async (itemID, catID) => {
   return db('category_item').insert({ item_id: itemID, category_id: catID });
@@ -132,4 +137,5 @@ module.exports = {
   createBySellerID,
   connectItemsAndCategories,
   connectItemsAndTags,
+  deleteAllItemTags,
 };

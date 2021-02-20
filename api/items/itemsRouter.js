@@ -46,22 +46,23 @@ router.put('/:productId', authRequired, async (req, res) => {
     if (response) {
       res.status(200).json(response);
     } else {
-      helper.notFound('items', res);
+      helper.notFound('item', res);
     }
   } catch {
     helper.dbError(res);
   }
 });
+
 // DELETE profile can delete an item
-router.delete('/:productId/tags', authRequired, async (req, res) => {
+router.delete('/:productId', authRequired, async (req, res) => {
   const { productId } = req.params;
-  const response = await Model.deleteAllItemTags(productId);
+  const response = await Model.remove('item', productId);
 
   try {
     if (response) {
       res.status(200).json(response);
     } else {
-      helper.notFound('category_item', res);
+      helper.notFound('item', res);
     }
   } catch {
     helper.dbError(res);

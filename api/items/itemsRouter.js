@@ -46,22 +46,23 @@ router.put('/:productId', authRequired, async (req, res) => {
     if (response) {
       res.status(200).json(response);
     } else {
-      helper.notFound('items', res);
+      helper.notFound('item', res);
     }
   } catch {
     helper.dbError(res);
   }
 });
+
 // DELETE profile can delete an item
-router.delete('/:productId/tags', authRequired, async (req, res) => {
+router.delete('/:productId', authRequired, async (req, res) => {
   const { productId } = req.params;
-  const response = await Model.deleteAllItemTags(productId);
+  const response = await Model.remove('item', productId);
 
   try {
     if (response) {
       res.status(200).json(response);
     } else {
-      helper.notFound('category_item', res);
+      helper.notFound('item', res);
     }
   } catch {
     helper.dbError(res);
@@ -69,9 +70,22 @@ router.delete('/:productId/tags', authRequired, async (req, res) => {
 });
 
 // DELETE all tags for the item
-router.delete('/:productId/tags', authRequired, async (req, res) => {
-  endpointCreator.deleteData('tag-item', req, res);
+router.delete('/:itemId/tags', authRequired, async (req, res) => {
+  const { itemId } = req.params;
+  const response = await Model.deleteAllItemTags(itemId);
+  try {
+    if (response) {
+      res.status(200).json(response);
+    } else {
+      res
+        .status(404)
+        .json({ message: 'You cannot delete tags from this item ' });
+    }
+  } catch (err) {
+    helper.dbError(res);
+  }
 });
+
 //POST items and tags are connected
 router.post('/:itemID/tag/:tagID', authRequired, async (req, res) => {
   const { itemID, tagID } = req.params;
